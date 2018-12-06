@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config
+spec:
+  selector:
+    matchLabels:
+      app: config
+
+  template:
+    metadata:
+      labels:
+        app: config
+
+    spec:
+      containers:
+      - name: config
+        image: andxu/config
+        env:
+          - name: CONFIG_SERVICE_PASSWORD
+            value: s3cr3t
+          - name: NOTIFICATION_SERVICE_PASSWORD
+            value: admin
+          - name: STATISTICS_SERVICE_PASSWORD
+            value: admin
+          - name: ACCOUNT_SERVICE_PASSWORD
+            value: admin
+          - name: MONGODB_CONNECTION_STRING
+            value: mongodb://piggy:nSpeYPy89Fs2KPSBe4ACXhaTOjnABHPqWCcufY4sPfD6NYDXNSaRGW9dZ8I8BBsx1oGU5IEI58EPEOTj4FjnJg==@piggy.documents.azure.com:10255/?ssl=true&replicaSet=globaldb
+        ports:
+        - containerPort: 8888
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: config
+spec:
+  selector:
+    app: config
+  ports:
+  - port: 8888
+    targetPort: 8888
+  

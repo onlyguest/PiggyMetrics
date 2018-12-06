@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  selector:
+    matchLabels:
+      app: gateway
+
+  template:
+    metadata:
+      labels:
+        app: gateway
+
+    spec:
+      containers:
+      - name: gateway
+        image: andxu/gateway
+        env:
+          - name: CONFIG_SERVICE_PASSWORD
+            value: admin
+          - name: NOTIFICATION_SERVICE_PASSWORD
+            value: admin
+          - name: STATISTICS_SERVICE_PASSWORD
+            value: admin
+          - name: ACCOUNT_SERVICE_PASSWORD
+            value: admin
+          - name: MONGODB_CONNECTION_STRING
+            value: mongodb://piggy:nSpeYPy89Fs2KPSBe4ACXhaTOjnABHPqWCcufY4sPfD6NYDXNSaRGW9dZ8I8BBsx1oGU5IEI58EPEOTj4FjnJg==@piggy.documents.azure.com:10255/?ssl=true&replicaSet=globaldb
+        ports:
+        - containerPort: 4000
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gateway
+spec:
+  selector:
+    app: gateway
+  ports:
+  - port: 4000
+    targetPort: 4000
+  
