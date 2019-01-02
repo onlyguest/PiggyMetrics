@@ -69,9 +69,9 @@ node {
         acrQuickTask azureCredentialsId: env.AZURE_CRED_ID, 
             registryName: env.ACR_NAME, 
             resourceGroupName: env.ACR_RES_GROUP, 
-            local: './statics-service',
+            local: './statistics-service',
             dockerfile: "Dockerfile",
-            imageNames: [[image: "$env.ACR_REGISTRY/statics:$env.BUILD_NUMBER"]]
+            imageNames: [[image: "$env.ACR_REGISTRY/statistics:$env.BUILD_NUMBER"]]
     }
 
     stage('deploy') {
