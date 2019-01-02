@@ -18,7 +18,7 @@ node {
 
     stage('deploy') {
             acsDeploy azureCredentialsId: env.AZURE_CRED_ID, 
-              configFilePaths: 'deployment.yml', 
+              configFilePaths: 'scripts/config.yaml', 
               containerRegistryCredentials: [[credentialsId: env.ACR_CREDENTIAL_ID, url: "http://$env.ACR_REGISTRY"]],
               containerService: "$env.AKS_NAME | AKS",
               enableConfigSubstitution: true, 
