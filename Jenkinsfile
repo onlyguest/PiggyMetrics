@@ -8,10 +8,10 @@ node {
     }
 
     stage('image') {
-        sh 'cd config'
         acrQuickTask azureCredentialsId: env.AZURE_CRED_ID, 
             registryName: env.ACR_NAME, 
             resourceGroupName: env.ACR_RES_GROUP, 
+            local: './config',
             dockerfile: "Dockerfile",
             imageNames: [[image: "$env.ACR_REGISTRY/$env.IMAGE_NAME:$env.BUILD_NUMBER"]]
     }
