@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+kubectl create -f ./scripts/account-service.yaml  -f ./scripts/auth-service.yaml  -f ./scripts/notification-service.yaml  -f ./scripts/turbine-stream-service.yaml -f ./scripts/gateway.yaml -f ./scripts/monitoring.yaml -f ./scripts/statistics-service.yaml

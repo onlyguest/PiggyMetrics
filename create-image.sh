@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 mvn package -DskipTests && \
 docker build ./config -t $DOCKER_HUB_USER/config && \
 docker build ./registry -t $DOCKER_HUB_USER/registry && \

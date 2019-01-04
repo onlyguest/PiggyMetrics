@@ -1,4 +1,10 @@
 spring:
+  data:
+    mongodb:
+      database: piggymetrics
+      uri: ${MONGODB_CONNECTION_STRING}
+    rabbitmq:
+      host: rabbitmq
   cloud:
     config:
       server:
@@ -13,3 +19,26 @@ spring:
 server:
   port: 8888
 
+logging:
+  level:
+    org.springframework.security: INFO
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://registry:8761/eureka/
+
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://auth-service/uaa/users/current

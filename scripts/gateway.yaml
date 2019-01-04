@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  selector:
+    matchLabels:
+      app: gateway
+
+  template:
+    metadata:
+      labels:
+        app: gateway
+
+    spec:
+      containers:
+      - name: gateway
+        image: {{DOCKER_HUB_USER}}/gateway
+        env:
+          - name: CONFIG_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: config-service-password
+          - name: NOTIFICATION_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: notification-service-password
+          - name: STATISTICS_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: statistics-service-password
+          - name: ACCOUNT_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: account-service-password
+          - name: MONGODB_CONNECTION_STRING
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: mongodb-connection-string
+        ports:
+        - containerPort: 4000
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gateway
+spec:
+  selector:
+    app: gateway
+  ports:
+  - port: 4000
+    targetPort: 4000
+  

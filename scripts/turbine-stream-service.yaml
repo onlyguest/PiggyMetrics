@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: turbine-stream-service
+spec:
+  selector:
+    matchLabels:
+      app: turbine-stream-service
+
+  template:
+    metadata:
+      labels:
+        app: turbine-stream-service
+
+    spec:
+      containers:
+      - name: turbine-stream-service
+        image: {{DOCKER_HUB_USER}}/turbine-stream-service
+        env:
+          - name: CONFIG_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: config-service-password
+          - name: NOTIFICATION_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: notification-service-password
+          - name: STATISTICS_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: statistics-service-password
+          - name: ACCOUNT_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: account-service-password
+          - name: MONGODB_CONNECTION_STRING
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: mongodb-connection-string
+        ports:
+        - containerPort: 80
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: turbine-stream-service
+spec:
+  selector:
+    app: turbine-stream-service
+  ports:
+  - port: 80
+    targetPort: 80
+  

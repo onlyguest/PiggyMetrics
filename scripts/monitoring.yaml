@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: monitoring
+
+  template:
+    metadata:
+      labels:
+        app: monitoring
+
+    spec:
+      containers:
+      - name: monitoring
+        image: {{DOCKER_HUB_USER}}/monitoring
+      env:
+        - name: CONFIG_SERVICE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: piggy-metrics-secret
+              key: config-service-password
+        - name: NOTIFICATION_SERVICE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: piggy-metrics-secret
+              key: notification-service-password
+        - name: STATISTICS_SERVICE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: piggy-metrics-secret
+              key: statistics-service-password
+        - name: ACCOUNT_SERVICE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: piggy-metrics-secret
+              key: account-service-password
+        - name: MONGODB_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: piggy-metrics-secret
+              key: mongodb-connection-string
+        ports:
+        - containerPort: 8080
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: monitoring
+spec:
+  selector:
+    app: monitoring
+  ports:
+  - port: 8080
+    targetPort: 8080
+  

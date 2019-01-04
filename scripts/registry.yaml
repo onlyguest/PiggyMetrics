@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+spec:
+  selector:
+    matchLabels:
+      app: registry
+
+  template:
+    metadata:
+      labels:
+        app: registry
+
+    spec:
+      containers:
+      - name: registry
+        image: {{DOCKER_HUB_USER}}/registry
+        env:
+          - name: CONFIG_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: config-service-password
+          - name: NOTIFICATION_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: notification-service-password
+          - name: STATISTICS_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: statistics-service-password
+          - name: ACCOUNT_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: account-service-password
+          - name: MONGODB_CONNECTION_STRING
+            valueFrom:
+              secretKeyRef:
+                name: piggy-metrics-secret
+                key: mongodb-connection-string
+        ports:
+        - containerPort: 8761
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: registry
+spec:
+  selector:
+    app: registry
+  ports:
+  - port: 8761
+    targetPort: 8761
+  
