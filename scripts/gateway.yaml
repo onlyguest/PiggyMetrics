@@ -41,8 +41,10 @@ spec:
   selector:
     app: gateway
   ports:
-  - port: 4000
+  - name: management
+    port: 4000
     targetPort: 4000
-  - port: 80
+  - name: http
+    port: 80
     targetPort: 80
   
