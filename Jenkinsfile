@@ -76,11 +76,15 @@ node {
 
     stage('deploy') {
             acsDeploy azureCredentialsId: env.AZURE_CRED_ID, 
-              configFilePaths: 'scripts/registry.yaml,scripts/mq.yml,scripts/config.yaml,scripts/account-service.yaml,scripts/auth-service.yaml,scripts/gateway.yaml,scripts/monitoring.yaml,scripts/notification-service.yaml,scripts/statistics-service.yaml,scripts/turbine-stream-service.yaml,ingress.yaml', 
+              configFilePaths: 'scripts/registry.yaml,scripts/mq.yml,scripts/config.yaml,scripts/account-service.yaml,scripts/auth-service.yaml,scripts/gateway.yaml,scripts/monitoring.yaml,scripts/notification-service.yaml,scripts/statistics-service.yaml,scripts/turbine-stream-service.yaml', 
               containerRegistryCredentials: [[credentialsId: env.ACR_CREDENTIAL_ID, url: "http://$env.ACR_REGISTRY"]],
               containerService: "$env.AKS_NAME | AKS",
               enableConfigSubstitution: true, 
               resourceGroupName: env.AKS_RES_GROUP,
               secretName: env.ACR_SECRET
+    }
+
+    stage('test') {
+        sh 'curl --header "Authorization: Bearer $env.TOKEN" http://$env.END_POINT/accounts/current'
     }
 }
