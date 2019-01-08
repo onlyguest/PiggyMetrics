@@ -85,9 +85,11 @@ node {
     }
 
     stage('test') {
-        sh "sleep 180"
-        sh "data=\$(curl 'http://$env.END_POINT/uaa/oauth/token' -H 'Authorization: Basic YnJvd3Nlcjo=' --data 'scope=ui&username=jieshe&password=123456&grant_type=password')"
-        sh "token=\$(echo $data | awk -F'[\",:}\"]' '{print \$(5)}')"
-        sh "curl --header \"Authorization: Bearer $token\" http://$env.END_POINT/accounts/current"
+        sh '''
+        sleep 180
+        data=$(curl 'http://23.96.0.201/uaa/oauth/token' -H 'Authorization: Basic YnJvd3Nlcjo=' --data 'scope=ui&username=jieshe&password=123456&grant_type=password')
+        token=$(echo $data | awk -F'[",:}"]' '{print $(5)}')
+        curl --header "Authorization: Bearer $token" http://23.96.0.201/accounts/current
+        '''
     }
 }
