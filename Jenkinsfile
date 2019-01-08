@@ -85,6 +85,11 @@ node {
     }
 
     stage('test') {
-        sh "curl --header \"Authorization: Bearer $env.TOKEN\" http://$env.END_POINT/accounts/current"
+        sh """
+        sleep 120
+        data=$(curl 'http://$env.END_POINT/uaa/oauth/token' -H 'Authorization: Basic YnJvd3Nlcjo=' --data 'scope=ui&username=jieshe&password=123456&grant_type=password')
+        token=$(echo $data | awk -F'[",:}"]' '{print $(5)}')
+        curl --header \"Authorization: Bearer $token\" http://$env.END_POINT/accounts/current
+        """
     }
 }
