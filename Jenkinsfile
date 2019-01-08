@@ -85,6 +85,6 @@ node {
     }
 
     stage('test') {
-        sh 'curl --header "Authorization: Bearer $env.TOKEN" http://$env.END_POINT/accounts/current'
+        sh "curl --header \"Authorization: Bearer $env.TOKEN\" http://$env.END_POINT/accounts/current"
     }
 }
