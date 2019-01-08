@@ -2,6 +2,16 @@ node {
     stage('init') {
         checkout scm
     }
+    
+    stage("last-changes") {
+        def publisher = LastChanges.getLastChangesPublisher "LAST_SUCCESSFUL_BUILD", "SIDE", "LINE", true, true, "", "", "", "", ""
+        publisher.publishLastChanges()
+        def changes = publisher.getLastChanges()
+        // println(changes.getEscapedDiff())
+        // for (commit in changes.getCommits()) {
+        //     println(commit)
+        // }
+    }
 
     stage('build') {
          sh 'mvn clean package'
