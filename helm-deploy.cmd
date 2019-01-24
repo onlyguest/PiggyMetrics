@@ -54,8 +54,10 @@ if errorlevel 1 (echo Unable to detect maven in your machine please install mave
 
 
 echo Executing mvn build...
-mvn package -DskipTests -B -V
+call mvn package -DskipTests -B -V
 
+if errorlevel 1 (echo Unable build using maven
+    pause && exit /B)
 
 echo Building docker images
 
