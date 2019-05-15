@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq-${TARGET_VERSION}
+  namespace: ${TARGET_NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
+
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+        version: ${TARGET_VERSION}
+
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        env:
+          - name: CONFIG_SERVICE_PASSWORD
+            value: admin
+        ports:
+        - containerPort: 5672

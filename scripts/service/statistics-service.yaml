@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: statistics-service
+  namespace: ${TARGET_NAMESPACE}
+  labels:
+    version: ${TARGET_VERSION}
+spec:
+  selector:
+    app: statistics-service
+    version: ${TARGET_VERSION}
+  ports:
+  - port: 80
+    targetPort: 80
+  

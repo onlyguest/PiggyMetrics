@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gateway-${TARGET_VERSION}
+  namespace: ${TARGET_NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      app: gateway
+
+  template:
+    metadata:
+      labels:
+        app: gateway
+        version: ${TARGET_VERSION}
+
+    spec:
+      containers:
+      - name: ${GATEWAY_IMAGE_NAME}
+        image: "${ACR_REGISTRY}/${GATEWAY_IMAGE_NAME}:${IMAGE_TAG}"
+        env:
+          - name: CONFIG_SERVICE_PASSWORD
+            value: admin
+          - name: NOTIFICATION_SERVICE_PASSWORD
+            value: admin
+          - name: STATISTICS_SERVICE_PASSWORD
+            value: admin
+          - name: ACCOUNT_SERVICE_PASSWORD
+            value: admin
+          - name: MONGODB_CONNECTION_STRING
+            value: ${DB_CONNECTION_STRING}
+        ports:
+        - containerPort: 4000
+      imagePullSecrets:
+      - name: "${ACR_SECRET_NAME}"

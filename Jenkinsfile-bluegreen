@@ -1,0 +1,107 @@
+def folders = ["gateway"]
+def stepsForParallel = folders.collectEntries {
+    ["echoing ${it}" : transformIntoStep(it)]
+}
+
+def transformIntoStep(inputString) {
+    return {
+        node {
+            checkout scm
+
+            sh "cd ${inputString}; mvn clean package -DskipTests; cd .."
+
+            acrQuickTask azureCredentialsId: env.AZURE_CRED_ID, 
+                registryName: env.ACR_NAME, 
+                resourceGroupName: env.ACR_RES_GROUP, 
+                local: "./${inputString}",
+                dockerfile: "Dockerfile",
+                imageNames: [[image: "$env.ACR_REGISTRY/${inputString}:$env.BUILD_NUMBER"], [image: "$env.ACR_REGISTRY/${inputString}:latest"]]
+        }
+    }
+}
+
+def userInput
+
+node('master') {
+    stage('init') {
+        checkout scm
+    }
+
+    stage('image build') {
+        parallel stepsForParallel
+    }
+
+    stage('test-deploy') {
+        sh "echo deploy to test environment"
+    }
+
+    stage('test-test') {
+        sh "echo test with test environment"
+    }
+    stage('staging-deploy') {
+        sh "echo deploy to staging environment"
+    }
+
+    stage('staging-test') {
+        sh "echo test with staging environment"
+    }
+
+    stage('prod-deploy') {
+        for (int i=0; i<folders.size(); i++) {
+            withEnv(["IMAGE_TAG=${BUILD_NUMBER}", "TARGET_VERSION=${VERSION2}"]){
+                acsDeploy azureCredentialsId: env.AZURE_CRED_ID, 
+                    configFilePaths: "scripts/deployment/${folders[i]}.yaml", 
+                    containerRegistryCredentials: [[credentialsId: env.ACR_CREDENTIAL_ID, url: "http://$env.ACR_REGISTRY"]],
+                    containerService: "$env.AKS_NAME | AKS",
+                    enableConfigSubstitution: true, 
+                    resourceGroupName: env.AKS_RES_GROUP,
+                    secretNamespace: env.TARGET_NAMESPACE,
+                    secretName: env.ACR_SECRET_NAME
+            }
+        }
+    }
+
+    stage('prod-test') {
+        sh "echo test with product environment"
+    }
+
+    stage('switch') {
+        for (int i=0; i<folders.size(); i++) {
+            withEnv(["TARGET_VERSION=${VERSION2}"]){
+                acsDeploy azureCredentialsId: env.AZURE_CRED_ID, 
+                    configFilePaths: "scripts/service/${folders[i]}.yaml", 
+                    containerService: "$env.AKS_NAME | AKS",
+                    enableConfigSubstitution: true, 
+                    resourceGroupName: env.AKS_RES_GROUP
+            }
+        }
+    }
+
+    stage('confirm switch back') {
+        try {
+            userInput = input(
+                id: 'Proceed1', message: 'Do you want to switch back?', parameters: [
+                [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you want to switch back the deployment']
+                ])
+        } catch(err) { // input false
+            echo "Aborted"
+        }
+    }
+
+    
+    if (userInput == true) {
+        stage('switch back') {
+            for (int i=0; i<folders.size(); i++) {
+                withEnv(["TARGET_VERSION=${VERSION1}"]){
+                    acsDeploy azureCredentialsId: env.AZURE_CRED_ID, 
+                        configFilePaths: "scripts/service/${folders[i]}.yaml", 
+                        containerService: "$env.AKS_NAME | AKS",
+                        enableConfigSubstitution: true, 
+                        resourceGroupName: env.AKS_RES_GROUP
+                }
+            }
+        }
+    } else {
+        // Send a notification
+    } 
+}

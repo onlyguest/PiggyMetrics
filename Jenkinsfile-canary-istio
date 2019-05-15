@@ -1,0 +1,87 @@
+def folders = ["gateway"]
+
+def stepsForParallel = folders.collectEntries {
+    ["echoing ${it}" : transformIntoStep(it)]
+}
+
+
+def transformIntoStep(inputString) {
+    return {
+        node {
+            checkout scm
+
+            sh "cd ${inputString}; mvn clean package -DskipTests; cd .."
+
+            acrQuickTask azureCredentialsId: env.AZURE_CRED_ID, 
+                registryName: env.ACR_NAME, 
+                resourceGroupName: env.ACR_RES_GROUP, 
+                local: "./${inputString}",
+                dockerfile: "Dockerfile",
+                imageNames: [[image: "$env.ACR_REGISTRY/${inputString}:$env.BUILD_NUMBER"], [image: "$env.ACR_REGISTRY/${inputString}:latest"]]
+        }
+    }
+}
+
+def CURRENT_VERSION = "blue"
+def TARGET_VERSION = "canary"
+
+def userInput
+
+node('master') {
+    stage('init') {
+        checkout scm
+    }
+    
+
+    stage('build') {
+        //  sh 'mvn package'
+    }
+
+    stage('image') {
+        parallel stepsForParallel
+    }
+
+    stage('test-deploy') {
+        
+    }
+
+    stage('test') {
+        
+    }
+
+    stage('preview') {
+        for (int i=0; i<folders.size(); i++) {
+            withEnv(["IMAGE_TAG=${BUILD_NUMBER}", "TARGET_ROLE=${TARGET_VERSION}"]){
+                acsDeploy azureCredentialsId: env.AZURE_CRED_ID, 
+                    configFilePaths: "scripts/deployment/${folders[i]}.yaml", 
+                    containerRegistryCredentials: [[credentialsId: env.ACR_CREDENTIAL_ID, url: "http://$env.ACR_REGISTRY"]],
+                    containerService: "$env.AKS_NAME | AKS",
+                    enableConfigSubstitution: true, 
+                    resourceGroupName: env.AKS_RES_GROUP,
+                    secretNamespace: env.TARGET_NAMESPACE,
+                    secretName: env.ACR_SECRET_NAME
+                    
+                acsDeploy azureCredentialsId: env.AZURE_CRED_ID, 
+                    configFilePaths: "scripts/service/${folders[i]}.yaml", 
+                    containerService: "$env.AKS_NAME | AKS",
+                    enableConfigSubstitution: true, 
+                    resourceGroupName: env.AKS_RES_GROUP,
+                    secretNamespace: env.TARGET_NAMESPACE
+            }
+        }
+
+        // sh "kubectl apply -f scripts/canary/istio/gateway.yml"
+    }
+
+    stage('preview-test') {
+
+    }
+
+    stage('switch') {
+        
+    }
+    
+    stage('apply istio') {
+        sh "kubectl apply -f scripts/canary/istio/istio.yml"
+    }
+}
