@@ -1,4 +1,4 @@
-def folders = ["config", "account-service", "auth-service", "gateway", "monitoring", "notification-service", "registry", "statistics-service", "turbine-stream-service"]
+def folders = ["config", "mongodb", "account-service", "auth-service", "gateway", "monitoring", "notification-service", "registry", "statistics-service", "turbine-stream-service"]
 
 // The map we'll store the parallel steps in before executing them.
 def stepsForParallel = folders.collectEntries {
@@ -14,8 +14,10 @@ def transformIntoStep(inputString) {
     return {
         node {
             checkout scm
-
-            sh "cd ${inputString}; mvn clean package -DskipTests; cd .."
+            
+            if(inputString != "mongodb") {
+                sh "cd ${inputString}; mvn clean package -DskipTests; cd .."
+            }
 
             acrQuickTask azureCredentialsId: env.AZURE_CRED_ID, 
                 registryName: env.ACR_NAME, 

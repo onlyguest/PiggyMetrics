@@ -10,10 +10,7 @@ spec:
     app: gateway
     version: ${TARGET_VERSION}
   ports:
-  - name: management
-    port: 4000
-    targetPort: 4000
   - name: http
     port: 80
-    targetPort: 80
+    targetPort: 4000
   type: LoadBalancer

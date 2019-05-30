@@ -27,8 +27,8 @@ spec:
             value: admin
           - name: ACCOUNT_SERVICE_PASSWORD
             value: admin
-          - name: MONGODB_CONNECTION_STRING
-            value: ${DB_CONNECTION_STRING}
+          - name: MONGODB_PASSWORD
+            value: admin
         ports:
         - containerPort: 4000
       imagePullSecrets:

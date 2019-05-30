@@ -19,7 +19,7 @@ spec:
         image: "${ACR_REGISTRY}/${CONFIG_IMAGE_NAME}:${IMAGE_TAG}"
         env:
           - name: CONFIG_SERVICE_PASSWORD
-            value: s3cr3t
+            value: admin
           - name: NOTIFICATION_SERVICE_PASSWORD
             value: admin
           - name: STATISTICS_SERVICE_PASSWORD

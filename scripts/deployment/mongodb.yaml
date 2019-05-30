@@ -1,0 +1,111 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: account-mongodb-${TARGET_VERSION}
+  namespace: ${TARGET_NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      app: account-mongodb
+
+  template:
+    metadata:
+      labels:
+        app: account-mongodb
+        version: ${TARGET_VERSION}
+
+    spec:
+      containers:
+      - name: ${MONGODB_IMAGE_NAME}
+        image: "${ACR_REGISTRY}/${MONGODB_IMAGE_NAME}:${IMAGE_TAG}"
+        env:
+          - name: MONGODB_PASSWORD
+            value: admin
+        ports:
+        - containerPort: 27017
+      imagePullSecrets:
+      - name: "${ACR_SECRET_NAME}"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: auth-mongodb-${TARGET_VERSION}
+  namespace: ${TARGET_NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      app: auth-mongodb
+
+  template:
+    metadata:
+      labels:
+        app: auth-mongodb
+        version: ${TARGET_VERSION}
+
+    spec:
+      containers:
+      - name: ${MONGODB_IMAGE_NAME}
+        image: "${ACR_REGISTRY}/${MONGODB_IMAGE_NAME}:${IMAGE_TAG}"
+        env:
+          - name: MONGODB_PASSWORD
+            value: admin
+        ports:
+        - containerPort: 27017
+      imagePullSecrets:
+      - name: "${ACR_SECRET_NAME}"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: statistics-mongodb-${TARGET_VERSION}
+  namespace: ${TARGET_NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      app: statistics-mongodb
+
+  template:
+    metadata:
+      labels:
+        app: statistics-mongodb
+        version: ${TARGET_VERSION}
+
+    spec:
+      containers:
+      - name: ${MONGODB_IMAGE_NAME}
+        image: "${ACR_REGISTRY}/${MONGODB_IMAGE_NAME}:${IMAGE_TAG}"
+        env:
+          - name: MONGODB_PASSWORD
+            value: admin
+        ports:
+        - containerPort: 27017
+      imagePullSecrets:
+      - name: "${ACR_SECRET_NAME}"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: notification-mongodb-${TARGET_VERSION}
+  namespace: ${TARGET_NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      app: notification-mongodb
+
+  template:
+    metadata:
+      labels:
+        app: notification-mongodb
+        version: ${TARGET_VERSION}
+
+    spec:
+      containers:
+      - name: ${MONGODB_IMAGE_NAME}
+        image: "${ACR_REGISTRY}/${MONGODB_IMAGE_NAME}:${IMAGE_TAG}"
+        env:
+          - name: MONGODB_PASSWORD
+            value: admin
+        ports:
+        - containerPort: 27017
+      imagePullSecrets:
+      - name: "${ACR_SECRET_NAME}"

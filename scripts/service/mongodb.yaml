@@ -1,0 +1,63 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: account-mongodb
+  namespace: ${TARGET_NAMESPACE}
+  labels:
+    version: ${TARGET_VERSION}
+spec:
+  selector:
+    app: account-mongodb
+    version: ${TARGET_VERSION}
+  ports:
+  - name: management
+    port: 27017
+    targetPort: 27017
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: auth-mongodb
+  namespace: ${TARGET_NAMESPACE}
+  labels:
+    version: ${TARGET_VERSION}
+spec:
+  selector:
+    app: auth-mongodb
+    version: ${TARGET_VERSION}
+  ports:
+  - name: management
+    port: 27017
+    targetPort: 27017
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: statistics-mongodb
+  namespace: ${TARGET_NAMESPACE}
+  labels:
+    version: ${TARGET_VERSION}
+spec:
+  selector:
+    app: statistics-mongodb
+    version: ${TARGET_VERSION}
+  ports:
+  - name: management
+    port: 27017
+    targetPort: 27017
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: notification-mongodb
+  namespace: ${TARGET_NAMESPACE}
+  labels:
+    version: ${TARGET_VERSION}
+spec:
+  selector:
+    app: notification-mongodb
+    version: ${TARGET_VERSION}
+  ports:
+  - name: management
+    port: 27017
+    targetPort: 27017

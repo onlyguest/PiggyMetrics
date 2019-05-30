@@ -20,15 +20,15 @@ spec:
         image: "${ACR_REGISTRY}/${CONFIG_IMAGE_NAME}:${IMAGE_TAG}"
         env:
           - name: CONFIG_SERVICE_PASSWORD
-            value: s3cr3t
+            value: admin
           - name: NOTIFICATION_SERVICE_PASSWORD
             value: admin
           - name: STATISTICS_SERVICE_PASSWORD
             value: admin
           - name: ACCOUNT_SERVICE_PASSWORD
             value: admin
-          - name: MONGODB_CONNECTION_STRING
-            value: ${DB_CONNECTION_STRING}
+          - name: MONGODB_PASSWORD
+            value: admin
         ports:
         - containerPort: 8888
       imagePullSecrets:
