@@ -22,7 +22,6 @@ def transformIntoStep(inputString) {
     }
 }
 
-def CURRENT_VERSION = "blue"
 def TARGET_VERSION = "canary"
 
 def userInput
@@ -62,7 +61,7 @@ node('master') {
                     secretName: env.ACR_SECRET_NAME
                     
                 acsDeploy azureCredentialsId: env.AZURE_CRED_ID, 
-                    configFilePaths: "scripts/service/${folders[i]}.yaml", 
+                    configFilePaths: "scripts/canary/service/${folders[i]}.yaml", 
                     containerService: "$env.AKS_NAME | AKS",
                     enableConfigSubstitution: true, 
                     resourceGroupName: env.AKS_RES_GROUP,

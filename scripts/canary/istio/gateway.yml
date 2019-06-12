@@ -2,6 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: piggy-gateway
+  namespace: piggy
 spec:
   selector:
     istio: ingressgateway
@@ -17,12 +18,13 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: gateway
+  namespace: piggy
 spec:
-  host: gateway
+  host: gateway.piggy.svc.cluster.local
   subsets:
   - name: v1
     labels:
-      version: v1
+      version: canary
   - name: canary
     labels:
       version: canary
@@ -31,6 +33,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: piggy
+  namespace: piggy
 spec:
   hosts:
   - "*"
@@ -39,7 +42,7 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /accounts/current
+        prefix: /accounts
     route:
     - destination:
         host: account-service
@@ -47,7 +50,7 @@ spec:
           number: 80
   - match:
     - uri:
-        prefix: /uaa/oauth
+        prefix: /uaa
     route:
     - destination:
         host: auth-service

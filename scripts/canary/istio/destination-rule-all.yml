@@ -2,97 +2,106 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: account-service
+  namespace: piggy
 spec:
-  host: account-service
+  host: account-service.piggy.svc.cluster.local
   subsets:
   - name: v1
     labels:
-      role: blue
+      role: v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: auth-service
+  namespace: piggy
 spec:
-  host: auth-service
+  host: auth-service.piggy.svc.cluster.local
   subsets:
   - name: v1
     labels:
-      role: blue
+      role: v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: config
+  namespace: piggy
 spec:
-  host: config
+  host: config.piggy.svc.cluster.local
   subsets:
   - name: v1
     labels:
-      role: blue
+      role: v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: monitoring
+  namespace: piggy
 spec:
-  host: monitoring
+  host: monitoring.piggy.svc.cluster.local
   subsets:
   - name: v1
     labels:
-      role: blue
+      role: v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: mq
+  namespace: piggy
 spec:
-  host: mq
+  host: mq.piggy.svc.cluster.local
   subsets:
   - name: v1
     labels:
-      role: blue
+      role: v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: notification-service
+  namespace: piggy
 spec:
-  host: notification-service
+  host: notification-service.piggy.svc.cluster.local
   subsets:
   - name: v1
     labels:
-      role: blue
+      role: v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: registry
+  namespace: piggy
 spec:
-  host: registry
+  host: registry.piggy.svc.cluster.local
   subsets:
   - name: v1
     labels:
-      role: blue
+      role: v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: statistics-service
+  namespace: piggy
 spec:
-  host: statistics-service
+  host: statistics-service.piggy.svc.cluster.local
   subsets:
   - name: v1
     labels:
-      role: blue
+      role: v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: turbine-stream-service
+  namespace: piggy
 spec:
-  host: turbine-stream-service
+  host: turbine-stream-service.piggy.svc.cluster.local
   subsets:
   - name: v1
     labels:
-      role: blue
+      role: v1
